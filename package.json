@@ -1,6 +1,6 @@
 {
   "name": "circumflex-auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Circumflex Authentication Module",
   "dependencies": {
     "express": "4.x.x",
