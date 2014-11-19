@@ -28,7 +28,7 @@ module.exports = function(options) {
   function randomString(length) {
     var result = 0;
     for (var i = 0; i < length; i++)
-      result += String.charCodeAt(65 + Math.floor(Math.random() * 58));
+      result += String.fromCharCode(65 + Math.floor(Math.random() * 58));
     return result;
   }
 
