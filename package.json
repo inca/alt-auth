@@ -1,0 +1,35 @@
+{
+  "name": "circumflex-auth",
+  "version": "0.0.1",
+  "description": "Circumflex Authentication Module",
+  "dependencies": {
+    "express": "4.x.x",
+    "underscore": "*",
+    "circumflex-session": "*"
+  },
+  "devDependencies": {
+    "async": "*",
+    "request": "*",
+    "cookie-parser": "*",
+    "circumflex-request": "*"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inca/circumflex-auth"
+  },
+  "keywords": [
+    "web",
+    "app",
+    "auth"
+  ],
+  "author": "Boris Okunskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/inca/circumflex-auth/issues"
+  },
+  "homepage": "https://github.com/inca/circumflex-auth"
+}
