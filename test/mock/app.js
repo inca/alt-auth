@@ -18,9 +18,9 @@ var AUTH = {
   }
 };
 
-app.use(require('cookie-parser')('Circumflex Auth'));
-app.use(require('circumflex-request')());
-app.use(require('circumflex-session').mock());
+app.use(require('cookie-parser')('alt-auth'));
+app.use(require('expressr')());
+app.use(require('alt-session').mock());
 app.use(require('../../index')(AUTH));
 
 app.get('/', function(req, res, next) {

@@ -1,17 +1,17 @@
 {
-  "name": "circumflex-auth",
+  "name": "alt-auth",
   "version": "0.0.3",
-  "description": "Circumflex Authentication Module",
+  "description": "Alternative Auth Middleware for Express",
   "dependencies": {
     "express": "4.x.x",
     "underscore": "*",
-    "circumflex-session": "*"
+    "alt-session": "*"
   },
   "devDependencies": {
     "async": "*",
     "request": "*",
     "cookie-parser": "*",
-    "circumflex-request": "*"
+    "expressr": "*"
   },
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/inca/circumflex-auth"
+    "url": "https://github.com/inca/alt-auth"
   },
   "keywords": [
     "web",
@@ -29,7 +29,7 @@
   "author": "Boris Okunskiy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/inca/circumflex-auth/issues"
+    "url": "https://github.com/inca/alt-auth/issues"
   },
-  "homepage": "https://github.com/inca/circumflex-auth"
+  "homepage": "https://github.com/inca/alt-auth"
 }

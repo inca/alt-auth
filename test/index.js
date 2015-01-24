@@ -3,7 +3,7 @@
 var request = require('request')
   , assert = require('assert');
 
-describe('Circumflex Auth', function() {
+describe('alt-auth', function() {
 
   before(function(cb) {
     require('./mock/app')(cb);

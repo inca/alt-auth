@@ -5,7 +5,7 @@ var _ = require('underscore');
 /**
  * Simple session-based authentication middleware.
  *
- * Must be used after cookie parser and Circumflex session middleware.
+ * Must be used after cookie parser and alt-session middleware.
  *
  * Available options:
  *
@@ -60,7 +60,7 @@ module.exports = function(options) {
   return function auth(req, res, next) {
 
     if (!req.session) {
-      throw new Error('Circumflex session is required for Auth middleware.')
+      throw new Error('alt-session is required for alt-auth middleware.')
     }
 
     /**
@@ -184,6 +184,8 @@ module.exports = function(options) {
       if (!cookieValue) return cb();
       var userId = cookieValue.substring(0, cookieValue.indexOf(':'));
       var token = cookieValue.substring(cookieValue.indexOf(':') + 1);
+      if (!userId)
+        return unauthenticated();
       // Attempt to find a user
       options.findUserById(userId, function(err, user) {
         if (err) return cb(err);
