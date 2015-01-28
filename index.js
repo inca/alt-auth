@@ -72,6 +72,7 @@ module.exports = function(options) {
      * @param cb {Function} Callback
      */
     req.login = function(user, cb) {
+      req.principal = res.locals.principal = user;
       req.session.set('authPrincipalId', options.getUserId(user).toString(), cb);
     };
 
@@ -94,11 +95,7 @@ module.exports = function(options) {
         var cookieValue = options.getUserId(user) + ':' + token;
         res.cookie(cookieName, cookieValue, persistence.cookie);
         // Store the token in session
-        req.session.set('authPersistenceToken', token, function(err) {
-          if (err) return cb(err);
-          // Return this token
-          cb(null, token);
-        });
+        req.session.set('authPersistenceToken', token, cb);
       });
     };
 
@@ -108,6 +105,8 @@ module.exports = function(options) {
      * @param cb {Function} Callback
      */
     req.logout = function(cb) {
+      delete req.principal;
+      delete res.locals.principal;
       // Only destroy the session if not persistent
       if (!persistence)
         return req.session.invalidate(cb);
@@ -151,65 +150,58 @@ module.exports = function(options) {
     /**
      * Attempts to populate the `req.principal` with currently logged
      * authentication identity.
-     *
-     * @param cb {Function} Callback
      */
-    req.trySessionLogin = function(cb) {
+    function trySessionLogin(req, res, next) {
       req.session.get('authPrincipalId', function(err, userId) {
-        if (err) return cb(err);
-        if (!userId) return cb();
+        if (err) return next(err);
+        if (!userId) return next();
         options.findUserById(userId, function(err, user) {
-          if (err) return cb(err);
+          if (err) return next(err);
           if (!user)
-            return req.session.remove('authPrincipalId', cb);
+            return req.session.remove('authPrincipalId', next);
           req.principal = res.locals.principal = user;
-          return cb();
+          return next();
         });
       });
-    };
+    }
 
     /**
      * Attempts to authenticate using a cookie which is supposed to
      * be previously set via `req.persistLogin`.
-     *
-     * @param cb {Function} Callback
      */
-    req.tryPersistentLogin = function(cb) {
+    function tryPersistentLogin(req, res, next) {
       function unauthenticated() {
         res.clearCookie(persistence.cookie.name);
-        return cb();
+        return next();
       }
       // Read data from the cookie
       var cookieValue = req.signedCookies[persistence.cookie.name];
-      if (!cookieValue) return cb();
+      if (!cookieValue) return next();
       var userId = cookieValue.substring(0, cookieValue.indexOf(':'));
       var token = cookieValue.substring(cookieValue.indexOf(':') + 1);
       if (!userId)
         return unauthenticated();
       // Attempt to find a user
       options.findUserById(userId, function(err, user) {
-        if (err) return cb(err);
+        if (err) return next(err);
         if (!user) return unauthenticated();
         // See if user really owns the token
         persistence.hasToken(user, token, function(err, owns) {
-          if (err) return cb(err);
+          if (err) return next(err);
           if (!owns) return unauthenticated();
           // Log him in
-          req.login(user, function(err) {
-            if (err) return cb(err);
-            req.trySessionLogin(cb);
-          });
+          req.login(user, next);
         });
       });
-    };
+    }
 
-    /**
-     * Middleware body.
-     */
-    req.trySessionLogin(function(err) {
-      if (err) return next(err);
+    trySessionLogin(req, res, function(err) {
+      if (err)
+        return next(err);
+      if (req.principal)
+        return next();
       if (persistence)
-        req.tryPersistentLogin(next);
+        tryPersistentLogin(req, res, next);
       else next();
     });
 
